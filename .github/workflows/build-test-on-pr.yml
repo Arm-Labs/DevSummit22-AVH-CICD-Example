@@ -26,7 +26,7 @@ jobs:
           repo: https://github.com/bulislaw/TrustZone-DevSummit22-Demo
           auth: ${{ secrets.KSC_ACCESS_TOKEN }}
           # Path to the cprj file (relative to the top of the repo)
-          project: app/AWS/OTA_MQTT_Update_Demo.Debug+B-U585I-IOT02A.cprj
+          project: app/AWS/OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A.cprj
           # Reference to build. This can be a commit hash or branch so we can use this in CI
           ref: ${{ github.ref }}
           # Github personal access token
