@@ -38,4 +38,4 @@ jobs:
           # Whether to keep the artefacts (OPTIONAL)
           keep-artefacts: true
           # Whether the repository is private or internal, this is required if the repository isn't public (OPTIONAL)
-          private-repo: false
+          private-repo: true
