@@ -5,12 +5,12 @@
     <key>Type</key>
     <string>iot</string>
     <key>UniqueIdentifier</key>
-    <string>STM32U5-DevSummit22</string>
+    <string>DevSummit22-demo</string>
     <key>DeviceIdentifier</key>
     <string>stm32u5-b-u585i-iot02a</string>
     <key>Version</key>
     <string>1.0.0</string>
     <key>Build</key>
-    <string>STM32U5-DevSummit22</string>
+    <string>DevSummit22-demo</string>
 </dict>
 </plist>
