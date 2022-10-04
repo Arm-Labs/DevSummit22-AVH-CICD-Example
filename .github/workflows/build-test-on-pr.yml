@@ -53,3 +53,8 @@ jobs:
           cp ../avh/target/b_u585i_iot02a/default-firmware/tfm_s_signed.bin .
 
           zip firmware.zip load.txt bl2.bin tfm_s_signed.bin OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A_signed.bin
+      - name: Upload AVH image
+        uses: actions/upload-artifact@master
+        with:
+          name: firmware.zip
+          path: ${{ github.workspace }}/out/firmware.zip
