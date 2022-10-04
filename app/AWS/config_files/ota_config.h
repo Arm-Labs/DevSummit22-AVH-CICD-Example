@@ -76,7 +76,7 @@
  *
  * <b>Possible values:</b> Any unsigned 32 integer. <br>
  */
-#define otaconfigSELF_TEST_RESPONSE_WAIT_MS     16000U
+#define otaconfigSELF_TEST_RESPONSE_WAIT_MS     4294967295U
 
 /**
  * @brief Milliseconds to wait before requesting data blocks from the OTA
