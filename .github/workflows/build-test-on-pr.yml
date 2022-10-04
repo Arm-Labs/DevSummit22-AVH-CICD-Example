@@ -39,16 +39,16 @@ jobs:
           keep-artefacts: true
           # Whether the repository is private or internal, this is required if the repository isn't public (OPTIONAL)
           private-repo: true
-        - name: Assemble AVH image
-          run: |
-            MAJOR_VERSION="$(awk '/define APP_VERSION_MAJOR/ {print $3}' app/AWS/config_files/ota_demo_config.h)" \
-            MINOR_VERSION="$(awk '/define APP_VERSION_MINOR/ {print $3}' app/AWS/config_files/ota_demo_config.h)" \
-            BUILD_VERSION="$(awk '/define APP_VERSION_BUILD/ {print $3}' app/AWS/config_files/ota_demo_config.h)" \
-            ./app/AWS/Board/B-U585I-IOT02A/sign_image.sh out/OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A "$MAJOR_VERSION.$MINOR_VERSION.$BUILD_VERSION" "$((10#$MAJOR_VERSION$MINOR_VERSION$BUILD_VERSION))"
+      - name: Assemble AVH image
+        run: |
+          MAJOR_VERSION="$(awk '/define APP_VERSION_MAJOR/ {print $3}' app/AWS/config_files/ota_demo_config.h)" \
+          MINOR_VERSION="$(awk '/define APP_VERSION_MINOR/ {print $3}' app/AWS/config_files/ota_demo_config.h)" \
+          BUILD_VERSION="$(awk '/define APP_VERSION_BUILD/ {print $3}' app/AWS/config_files/ota_demo_config.h)" \
+          ./app/AWS/Board/B-U585I-IOT02A/sign_image.sh out/OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A "$MAJOR_VERSION.$MINOR_VERSION.$BUILD_VERSION" "$((10#$MAJOR_VERSION$MINOR_VERSION$BUILD_VERSION))"
 
-            cd out/
-            cp ../avh/target/b_u585i_iot02a/default-firmware/load.txt .
-            cp ../avh/target/b_u585i_iot02a/default-firmware/bl2.bin .
-            cp ../avh/target/b_u585i_iot02a/default-firmware/tfm_s_signed.bin .
+          cd out/
+          cp ../avh/target/b_u585i_iot02a/default-firmware/load.txt .
+          cp ../avh/target/b_u585i_iot02a/default-firmware/bl2.bin .
+          cp ../avh/target/b_u585i_iot02a/default-firmware/tfm_s_signed.bin .
 
-            zip firmware.zip load.txt bl2.bin tfm_s_signed.bin OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A_signed.bin
+          zip firmware.zip load.txt bl2.bin tfm_s_signed.bin OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A_signed.bin
