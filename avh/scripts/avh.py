@@ -8,23 +8,22 @@ import avh_api_async as AvhAPI
 from pprint import pprint
 import ssl
 
-if len(sys.argv) < 3 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
-  print('Usage: %s <ApiEndpoint> <ApiToken> [[vmName] [fmwFile]]', sys.argv[0])
+if len(sys.argv) < 4 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
+  print('Usage: %s <ApiToken> <CloudCert> <SignerKey> [fmwFile [vmName]', sys.argv[0])
   exit(-1)
 
+apiEndpoint = 'https://app.avh.arm.com/api'
 vmName = 'DevSummit22-demo'
 fmwFile = os.path.join(sys.path[0], '../target/b_u585i_iot02a/firmware')
-cert = '''
-'''
-ota_signer_key = '''
-'''
 
-apiEndpoint = sys.argv[1]
-apiToken = sys.argv[2]
-if len(sys.argv) > 3:
-  vmName = sys.argv[3]
+apiToken = sys.argv[1]
+cert = sys.argv[2]
+ota_signer_key = sys.argv[3]
+
 if len(sys.argv) > 4:
-  fmwFile = sys.argv[4]
+  fmvFile = sys.argv[4]
+if len(sys.argv) > 5:
+  vmName = sys.argv[5]
 
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
