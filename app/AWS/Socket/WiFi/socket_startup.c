@@ -21,6 +21,7 @@
 #include <stdio.h>
 
 #include "Driver_WiFi.h"
+#include "aws_clientcredential.h"
 
 #define SSID            ""
 #define PASSWORD        ""
@@ -38,8 +39,8 @@ int32_t socket_startup (void) {
   
   memset((void *)&config, 0, sizeof(config));
 
-  config.ssid     = SSID;
-  config.pass     = PASSWORD;
+  config.ssid     = pcWIFI_SSID;
+  config.pass     = pcWIFI_PASSWORD;
   config.security = SECURITY_TYPE;
   config.ch       = 0U;
 
