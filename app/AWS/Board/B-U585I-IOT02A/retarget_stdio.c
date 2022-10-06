@@ -108,16 +108,24 @@ int stdout_putchar (int ch) {
   \return     The next character from the input, or -1 on read error.
 */
 int stdin_getchar (void) {
-  int ch;
-  HAL_StatusTypeDef hal_stat;
+  int ch = -1;
+  uint32_t idx, cnt;
+
+  if (uart_rx_initialized == 0U) {
+    uart_rx_init();
+    uart_rx_initialized = 1U;
+  }
 
   do {
-    hal_stat = HAL_UART_Receive(&HUARTx, (uint8_t *)&ch, 1U, 60000U);
-  } while (hal_stat == HAL_TIMEOUT);
-
-  if (hal_stat != HAL_OK) {
-    return -1;
-  }
+    cnt = uart_rx_idx_i - uart_rx_idx_o;
+    if (cnt > 0U) {
+      idx = uart_rx_idx_o & (UART_BUFFER_SIZE - 1U);
+      ch = uart_rx_buf[uart_rx_idx_o++];
+    }
+    else {
+      osEventFlagsWait(uart_rx_evt_id, UART_RX_EVENT, osFlagsWaitAny, osWaitForever);
+    }
+  } while (cnt == 0U);
 
   return ch;
 }
