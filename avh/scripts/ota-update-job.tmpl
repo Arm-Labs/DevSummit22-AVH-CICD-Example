@@ -1,0 +1,30 @@
+{
+     "otaUpdateId": "${OTA_UPDATE_ID}",
+     "targets": [
+         "${OTA_TARGET}"
+     ],
+     "targetSelection": "SNAPSHOT",
+     "files": [{
+         "fileName": "non_secure image",
+         "fileVersion": "1",
+         "fileLocation": {
+             "s3Location": {
+                 "bucket": "${OTA_S3_BUCKET}",
+                 "key": "OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A_signed.bin",
+                 "version": "${OTA_S3_VERSION}"
+             }
+         },
+         "codeSigning": {
+             "startSigningJobParameter": {
+                 "signingProfileName": "${OTA_SIGNING_PROFILE}",
+                 "destination": {
+                     "s3Destination": {
+                         "bucket": "${OTA_S3_BUCKET}"
+                     }
+                 }
+             }
+         }
+     }],
+     "roleArn": "${OTA_ROLE_ARN}"
+ }
+
