@@ -83,4 +83,4 @@ jobs:
           export MINOR_VERSION="$(awk '/define APP_VERSION_MINOR/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
           export BUILD_VERSION="$(awk '/define APP_VERSION_BUILD/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
 
-          python3 avh/scripts/avh.py ${{ secrets.AVH_TOKEN }} ${{ secrets.AVH_CERT }} ${{ secrets.AVH_OTA_KEY}} "$MAJOR_VERSION.$MINOR_VERSION.$BUILD_VERSION" firmware.zip
+          python3 avh/scripts/avh.py "${{ secrets.AVH_TOKEN }}" "${{ secrets.AVH_CERT }}" "${{ secrets.AVH_OTA_KEY}}" "$MAJOR_VERSION.$MINOR_VERSION.$BUILD_VERSION" firmware.zip

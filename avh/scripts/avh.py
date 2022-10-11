@@ -10,7 +10,7 @@ import ssl
 import time
 import re
 
-if len(sys.argv) < 4 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
+if len(sys.argv) < 5 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
   print('Usage: %s <ApiToken> <CloudCert> <SignerKey> <expectedVersion> [fmwFile [vmName]', sys.argv[0])
   exit(-1)
 
