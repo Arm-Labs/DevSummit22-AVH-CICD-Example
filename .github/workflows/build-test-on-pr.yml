@@ -11,7 +11,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Pull
+        uses: actions/checkout@v2
+      - name: Patch
+        run: |
+          git am avh/target/b_u585i_iot02a/patches/0001-WORKAROUND-Update-getchar-for-STM32U5-to-enable-AVH.patch
       - name: Checkout Arm-Debug/solar-build-and-run
         uses: actions/checkout@v2
         with:
@@ -20,7 +24,7 @@ jobs:
           token: ${{ secrets.GIT_SECRET }}
           persist-credentials: false
           path: ./.github/actions/solar-build-and-run
-      - name: build
+      - name: Build DevSummit22-Demo
         uses: ./.github/actions/solar-build-and-run
         with:
           repo: https://github.com/bulislaw/TrustZone-DevSummit22-Demo
@@ -53,8 +57,28 @@ jobs:
           cp ../avh/target/b_u585i_iot02a/default-firmware/tfm_s_signed.bin .
 
           zip firmware.zip load.txt bl2.bin tfm_s_signed.bin OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A_signed.bin
+
       - name: Upload AVH image
         uses: actions/upload-artifact@master
         with:
           name: firmware.zip
           path: ${{ github.workspace }}/out/firmware.zip
+
+  run-and-test-on-avh:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download AVH image
+        uses: actions/download-artifact@master
+        with:
+          name: firmware.zip
+          path: ${{ github.workspace }}/
+      - name: Run and test on AVH
+        run: |
+          pip3 install avh-api avh-api-async websockets python-dateutil aiohttp six urllib3
+
+          export MAJOR_VERSION="$(awk '/define APP_VERSION_MAJOR/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
+          export MINOR_VERSION="$(awk '/define APP_VERSION_MINOR/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
+          export BUILD_VERSION="$(awk '/define APP_VERSION_BUILD/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
+
+          python3 avh/scripts/avh.py ${{ secrets.AVH_TOKEN }} ${{ secrets.AVH_CERT }} ${{ secrets.AVH_OTA_KEY}} "$MAJOR_VERSION.$MINOR_VERSION.$BUILD_VERSION" firmware.zip
