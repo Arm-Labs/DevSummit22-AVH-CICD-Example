@@ -187,8 +187,9 @@ async def main():
       await provisionAwsOtaDemo(api_instance, instance)
       await asyncio.wait_for(check_version(api_instance, instance, version), timeout=30)
 
-    except asyncio.TimeoutError:
-        print('Test FAILED: no version message received')
+    except asyncio.TimeoutError as e:
+      print('Test FAILED: no version message received')
+      error = e
     except Exception as e:
       print('Encountered error; cleaning up...')
       error = e
