@@ -13,7 +13,7 @@ jobs:
         with:
           repository: Arm-Debug/solar-build-and-run
           ref: refs/tags/v1.3.0
-          token: ${{ secrets.GIT_SECRET }}
+          token: ${{ secrets.GIT_ACCESS_TOKEN }}
           persist-credentials: false
           path: ./.github/actions/solar-build-and-run
       - name: build
@@ -26,7 +26,7 @@ jobs:
           # Reference to build. This can be a commit hash or branch so we can use this in CI
           ref: ${{ github.ref }}
           # Github personal access token
-          token: ${{ secrets.GIT_SECRET }}
+          token: ${{ secrets.GIT_ACCESS_TOKEN }}
           # Worker flavour to build with (OPTIONAL)
           flavour: cmsis_0_10-arm_6_16_0
           # Whether to run on an emulated board or not (OPTIONAL)
