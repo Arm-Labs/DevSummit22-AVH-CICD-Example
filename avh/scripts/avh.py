@@ -122,7 +122,7 @@ async def provisionAwsOtaDemo(api_instance, instance):
     # time.sleep(0.1) #Workouround for getchar issue
     # await console.send("conf set wifi_credential Arm\r\n")
     # time.sleep(0.1) #Workouround for getchar issue
-    # await console.send("conf set mqtt_endpoint XXX.eu-west-1.amazonaws.com\r\n")
+    # await console.send("conf set mqtt_endpoint XXX.amazonaws.com\r\n")
     # time.sleep(0.1) #Workouround for getchar issue
     # await console.send("conf set thing_name bartek-ds22-demo-thing\r\n")
     # time.sleep(0.1) #Workouround for getchar issue
