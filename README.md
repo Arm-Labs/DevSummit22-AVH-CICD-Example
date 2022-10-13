@@ -47,6 +47,7 @@ You'll need to set following repository action secrets:
 * `OTA_S3_BUCKET` - AWS S3 bucket name used for firmware storage during OTA
 * `OTA_TARGET` - AWS IoT Thing ARN of your device
 * `OTA_ROLE_ARN` - ARN of the AWS OTA service role
+* `OTA_POLICY` - Name of OTA policy attached to certificate
 * `AVH_CERT` - Virtual device self-signed certificate
 
 ### AWS
@@ -65,5 +66,6 @@ At the end of the setup you need to have:
   * `OTA_SIGNING_PROFILE` - Signing profile name
   * `OTA_S3_BUCKET` - AWS S3 bucket name used for firmware storage during OTA
   * `OTA_TARGET` - AWS IoT Thing ARN of your device
+  * `OTA_POLICY` - Name of OTA policy attached to certificate
   * `OTA_ROLE_ARN` - ARN of the AWS OTA service role
 

@@ -77,10 +77,13 @@ jobs:
           path: ${{ github.workspace }}/
       - name: Run and test on AVH
         run: |
-          pip3 install avh-api avh-api-async websockets python-dateutil aiohttp six urllib3
+          pip3 install avh-api avh-api-async websockets python-dateutil aiohttp six urllib3 boto3
 
           export MAJOR_VERSION="$(awk '/define APP_VERSION_MAJOR/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
           export MINOR_VERSION="$(awk '/define APP_VERSION_MINOR/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
           export BUILD_VERSION="$(awk '/define APP_VERSION_BUILD/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
 
-          python3 avh/scripts/avh.py "${{ secrets.AVH_ACCESS_TOKEN }}" "${{ secrets.AVH_MQTT_ENDPOINT }}" "${{ secrets.AVH_CERT }}" "${{ secrets.AVH_OTA_KEY}}" "$MAJOR_VERSION.$MINOR_VERSION.$BUILD_VERSION" firmware.zip
+          python3 avh/scripts/avh.py "${{ secrets.AVH_ACCESS_TOKEN }}" "${{ secrets.AVH_MQTT_ENDPOINT }}" "${{ secrets.OTA_POLICY }}" "${{ secrets.AVH_CERT }}" "${{ secrets.AVH_OTA_KEY}}" "$MAJOR_VERSION.$MINOR_VERSION.$BUILD_VERSION" firmware.zip
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
