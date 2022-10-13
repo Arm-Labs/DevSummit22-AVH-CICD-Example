@@ -10,8 +10,8 @@ import ssl
 import time
 import re
 
-if len(sys.argv) < 5 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
-  print('Usage: %s <ApiToken> <CloudCert> <SignerKey> <expectedVersion> [fmwFile [vmName]', sys.argv[0])
+if len(sys.argv) < 6 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
+  print('Usage: %s <ApiToken> <mqttEndpoint> <CloudCert> <SignerKey> <expectedVersion> [fmwFile [vmName]', sys.argv[0])
   exit(-1)
 
 apiEndpoint = 'https://app.avh.arm.com/api'
@@ -19,14 +19,15 @@ vmName = 'DevSummit22-demo'
 fmwFile = os.path.join(sys.path[0], '../target/b_u585i_iot02a/image/firmware')
 
 apiToken = sys.argv[1]
-cert = sys.argv[2]
-ota_signer_key = sys.argv[3]
-version = sys.argv[4]
+mqttEndpoint = sys.argv[2]
+cert = sys.argv[3]
+ota_signer_key = sys.argv[4]
+version = sys.argv[5]
 
-if len(sys.argv) > 5:
-  fmvFile = sys.argv[5]
 if len(sys.argv) > 6:
-  vmName = sys.argv[6]
+  fmvFile = sys.argv[6]
+if len(sys.argv) > 7:
+  vmName = sys.argv[7]
 
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
@@ -122,7 +123,7 @@ async def provisionAwsOtaDemo(api_instance, instance):
     # time.sleep(0.1) #Workouround for getchar issue
     # await console.send("conf set wifi_credential Arm\r\n")
     # time.sleep(0.1) #Workouround for getchar issue
-    # await console.send("conf set mqtt_endpoint XXX.amazonaws.com\r\n")
+    # await console.send("conf set {}\r\n".format(mqttEndpoint))
     # time.sleep(0.1) #Workouround for getchar issue
     # await console.send("conf set thing_name bartek-ds22-demo-thing\r\n")
     # time.sleep(0.1) #Workouround for getchar issue

@@ -41,6 +41,7 @@ You'll need to set following repository action secrets:
 
 *Created during the setup*
 
+* `AVH_MQTT_ENDPOINT` - A MQTT endpoint address, you can find it in your AWS IoT Core settings
 * `AVH_OTA_KEY` - AWS OTA Singer public key
 * `OTA_SIGNING_PROFILE` - Signing profile name
 * `OTA_S3_BUCKET` - AWS S3 bucket name used for firmware storage during OTA
@@ -59,6 +60,7 @@ At the end of the setup you need to have:
 * Board booting to AWS OTA application, connecting to the cloud and polling for updates
 * AWS IoT Core Thing setup according to the guide above
 * Following GitHub secrets set:
+  * `AVH_MQTT_ENDPOINT` - A MQTT endpoint address
   * `AVH_OTA_KEY` - AWS OTA Singer public key
   * `OTA_SIGNING_PROFILE` - Signing profile name
   * `OTA_S3_BUCKET` - AWS S3 bucket name used for firmware storage during OTA
