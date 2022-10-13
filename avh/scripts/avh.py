@@ -136,7 +136,7 @@ async def provisionAwsOtaDemo(api_instance, instance):
     # time.sleep(0.1) #Workouround for getchar issue
     # await console.send("pki generate csr\r\n")
 
-    time.sleep(0.5) #Workouround for getchar issue
+    time.sleep(1) #Workouround for getchar issue
 
     await console.send("pki import cert\r\n")
     time.sleep(0.5) #Workouround for getchar issue
