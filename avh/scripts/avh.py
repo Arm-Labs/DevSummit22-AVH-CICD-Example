@@ -64,6 +64,22 @@ async def check_version(console, version):
           print('Test FAILED: version {} expected {}'.format(match.group(1), version))
           raise Exception('Test FAILED: Version mismatch')
 
+async def wait_for_pattern(console, pattern):
+  text = ''
+  match = None
+
+  print("Waiting for pattern: {}".format(pattern))
+  async for message in console:
+    text += message.decode('utf-8')
+    while '\n' in text:
+      offset = text.find('\n')
+      line, text = text[:offset], text[offset+1:]
+
+      match = re.search(pattern, line)
+      if (match):
+        print("Done")
+        return match
+
 async def createSTM32U5(api_instance, vmName):
   print('Finding DevSummit22-demo instance...')
   api_response = await api_instance.v1_get_instances(name=vmName)
@@ -118,6 +134,8 @@ async def captureDeviceCert(console):
 
 async def provisionAwsOtaDemo(console, thingName, mqttEndpoint, ota_signer_key):
   #TODO Check if the demo is in provisioning mode & process incoming messages
+
+  await wait_for_pattern(console, 'Command Line Interface')
 
   print('Provisioning the config...')
   await console.send("conf set wifi_ssid Arm\r\n")
