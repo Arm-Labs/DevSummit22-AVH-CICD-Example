@@ -26,7 +26,7 @@ ota_signer_key = sys.argv[4]
 version = sys.argv[5]
 
 if len(sys.argv) > 6:
-  fmvFile = sys.argv[6]
+  fmwFile = sys.argv[6]
 if len(sys.argv) > 7:
   vmName = sys.argv[7]
 
