@@ -153,7 +153,7 @@ async def provisionAwsOtaDemo(console, thingName, mqttEndpoint, ota_signer_key):
   cert = await captureDeviceCert(console)
 
   await console.send("pki import key ota_signer_pub\r\n")
-  await console.send(ota_signer_key)
+  await console.send(ota_signer_key + "\r\n")
 
   print('done')
 
