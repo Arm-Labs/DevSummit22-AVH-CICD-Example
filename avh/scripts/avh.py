@@ -72,13 +72,13 @@ async def createSTM32U5(api_instance, vmName):
     raise Exception('Failed to find vm instance')
   instance = api_response[0]
 
-  # print('Setting the VM to use the demo image: {}'.format(fmwFile))
-  # api_response = await api_instance.v1_create_image('fwbinary', 'plain', 
-  #   name=os.path.basename(fmwFile),
-  #   instance=instance.id,
-  #   file=fmwFile
-  # )
-  # pprint(api_response)
+  print('Setting the VM to use the demo image: {}'.format(fmwFile))
+  api_response = await api_instance.v1_create_image('fwbinary', 'plain', 
+    name=os.path.basename(fmwFile),
+    instance=instance.id,
+    file=fmwFile
+  )
+  pprint(api_response)
 
   print('Resetting VM to use the new software')
   api_response = await api_instance.v1_reboot_instance(instance.id)
