@@ -157,6 +157,9 @@ async def provisionAwsOtaDemo(console, thingName, mqttEndpoint, ota_signer_key):
 
   print('done')
 
+  print("Rebooting the device...")
+  await console.send("reset\r\n")
+
   return cert
 
 async def cleanAwsIotThing(thingName, certArn, certId, certPolicy):
@@ -238,10 +241,10 @@ async def main():
       consoleEndpoint = await api_instance.v1_get_instance_console(instance.id)
       console = await ws.connect(consoleEndpoint.url, ssl=ctx)
       cert = await provisionAwsOtaDemo(console, thingName, mqttEndpoint, ota_signer_key)
+
       awsCert = await createAwsIotThing(cert, thingName, certPolicy)
 
-      print("Rebooting the device...")
-      await console.send("reset\r\n")
+
       await asyncio.wait_for(check_version(console, version), timeout=30)
 
     except asyncio.TimeoutError as e:
