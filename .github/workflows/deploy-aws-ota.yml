@@ -4,44 +4,20 @@ on:
   workflow_dispatch:
 
 jobs:
+  build:
+    uses: ./.github/workflows/build-app.yml
+    secrets: inherit
   deploy:
     runs-on: ubuntu-latest
+    needs: build
     steps:
-      - uses: actions/checkout@v3
-      - name: Checkout Arm-Debug/solar-build-and-run
+      - name: Pull codebase
         uses: actions/checkout@v3
+      - name: Download application image
+        uses: actions/download-artifact@master
         with:
-          repository: Arm-Debug/solar-build-and-run
-          ref: refs/tags/v1.3.0
-          token: ${{ secrets.GIT_ACCESS_TOKEN }}
-          persist-credentials: false
-          path: ./.github/actions/solar-build-and-run
-      - name: build
-        uses: ./.github/actions/solar-build-and-run
-        with:
-          repo: https://github.com/bulislaw/TrustZone-DevSummit22-Demo
-          auth: ${{ secrets.KSC_ACCESS_TOKEN }}
-          # Path to the cprj file (relative to the top of the repo)
-          project: app/AWS/OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A.cprj
-          # Reference to build. This can be a commit hash or branch so we can use this in CI
-          ref: ${{ github.ref }}
-          # Github personal access token
-          token: ${{ secrets.GIT_ACCESS_TOKEN }}
-          # Worker flavour to build with (OPTIONAL)
-          flavour: cmsis_0_10-arm_6_16_0
-          # Whether to run on an emulated board or not (OPTIONAL)
-          build-only: True
-          # Whether to keep the artefacts (OPTIONAL)
-          keep-artefacts: true
-          # Whether the repository is private or internal, this is required if the repository isn't public (OPTIONAL)
-          private-repo: true
-      - name: Sign images
-        run: |
-          pip install imgtool intelhex
-          export MAJOR_VERSION="$(awk '/define APP_VERSION_MAJOR/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
-          export MINOR_VERSION="$(awk '/define APP_VERSION_MINOR/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
-          export BUILD_VERSION="$(awk '/define APP_VERSION_BUILD/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
-          ./app/AWS/Board/B-U585I-IOT02A/sign_image.sh out/OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A "$MAJOR_VERSION.$MINOR_VERSION.$BUILD_VERSION" "$(date +%s)"
+          name: OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A_signed.bin
+          path: ${{ github.workspace }}/out/
       - name: Deploy OTA AWS job
         run: |
           aws s3 cp out/OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A_signed.bin s3://${{ secrets.OTA_S3_BUCKET }}/

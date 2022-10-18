@@ -9,69 +9,26 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Pull
-        uses: actions/checkout@v3
-      - name: Checkout Arm-Debug/solar-build-and-run
-        uses: actions/checkout@v3
-        with:
-          repository: Arm-Debug/solar-build-and-run
-          ref: refs/tags/v1.3.0
-          token: ${{ secrets.GIT_ACCESS_TOKEN }}
-          persist-credentials: false
-          path: ./.github/actions/solar-build-and-run
-      - name: Build DevSummit22-Demo
-        uses: ./.github/actions/solar-build-and-run
-        with:
-          repo: https://github.com/bulislaw/TrustZone-DevSummit22-Demo
-          auth: ${{ secrets.KSC_ACCESS_TOKEN }}
-          # Path to the cprj file (relative to the top of the repo)
-          project: app/AWS/OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A.cprj
-          # Reference to build. This can be a commit hash or branch so we can use this in CI
-          ref: ${{ github.ref }}
-          # Github personal access token
-          token: ${{ secrets.GIT_ACCESS_TOKEN }}
-          # Worker flavour to build with (OPTIONAL)
-          flavour: cmsis_0_10-arm_6_16_0
-          # Whether to run on an emulated board or not (OPTIONAL)
-          build-only: True
-          # Whether to keep the artefacts (OPTIONAL)
-          keep-artefacts: true
-          # Whether the repository is private or internal, this is required if the repository isn't public (OPTIONAL)
-          private-repo: true
-      - name: Assemble AVH image
-        run: |
-          pip install imgtool intelhex
-          export MAJOR_VERSION="$(awk '/define APP_VERSION_MAJOR/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
-          export MINOR_VERSION="$(awk '/define APP_VERSION_MINOR/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
-          export BUILD_VERSION="$(awk '/define APP_VERSION_BUILD/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
-          ./app/AWS/Board/B-U585I-IOT02A/sign_image.sh out/OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A "$MAJOR_VERSION.$MINOR_VERSION.$BUILD_VERSION" "$((10#$MAJOR_VERSION$MINOR_VERSION$BUILD_VERSION))"
-
-          cd out/
-          cp ../avh/target/b_u585i_iot02a/default-firmware/load.txt .
-          cp ../avh/target/b_u585i_iot02a/default-firmware/bl2.bin .
-          cp ../avh/target/b_u585i_iot02a/default-firmware/tfm_s_signed.bin .
-
-          zip firmware.zip load.txt bl2.bin tfm_s_signed.bin OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A_signed.bin
-
-      - name: Upload AVH image
-        uses: actions/upload-artifact@master
-        with:
-          name: firmware.zip
-          path: ${{ github.workspace }}/out/firmware.zip
-
+    uses: ./.github/workflows/build-app.yml
+    secrets: inherit
   test-on-avh:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Pull
+      - name: Pull codebase
         uses: actions/checkout@v3
-      - name: Download AVH image
+      - name: Download application image
         uses: actions/download-artifact@master
         with:
-          name: firmware.zip
+          name: OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A_signed.bin
           path: ${{ github.workspace }}/
+      - name: Assemble AVH image
+        run: |
+          cp avh/target/b_u585i_iot02a/default-firmware/load.txt .
+          cp avh/target/b_u585i_iot02a/default-firmware/bl2.bin .
+          cp avh/target/b_u585i_iot02a/default-firmware/tfm_s_signed.bin .
+
+          zip firmware.zip load.txt bl2.bin tfm_s_signed.bin OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A_signed.bin
       - name: Run and test on AVH
         run: |
           pip3 install avh-api avh-api-async websockets python-dateutil aiohttp six urllib3 boto3
