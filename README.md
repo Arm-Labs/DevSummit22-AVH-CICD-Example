@@ -1,4 +1,4 @@
-# Arm Virtual Hardware in CI/CD workflow demo
+# Arm Virtual Hardware in CI/CD workflows
 
 This demo shows how to use 3rd party hardware AVH to automatically test and deploy application using GitHub Actions. On each
 commit and pull request a test job is started using a virtual STM32U5 IoT Discovery Kit, which confirms the firmware is functional. Another GHA job is available to deploy the firmware to real hardware using Amazon IoT firmware update service.
