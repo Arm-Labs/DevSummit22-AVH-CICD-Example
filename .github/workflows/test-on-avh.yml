@@ -13,9 +13,6 @@ jobs:
     steps:
       - name: Pull
         uses: actions/checkout@v3
-      - name: Patch
-        run: |
-          git apply avh/target/b_u585i_iot02a/patches/0001-WORKAROUND-Update-getchar-for-STM32U5-to-enable-AVH.patch
       - name: Checkout Arm-Debug/solar-build-and-run
         uses: actions/checkout@v3
         with:
