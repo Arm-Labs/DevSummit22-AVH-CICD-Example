@@ -62,7 +62,7 @@
  * declared in the ota_appversion32.h file in the OTA library.
  */
 #ifndef APP_VERSION_BUILD
-    #define APP_VERSION_BUILD    5
+    #define APP_VERSION_BUILD    6
 #endif
 
 /**
