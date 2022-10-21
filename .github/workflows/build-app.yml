@@ -45,7 +45,7 @@ jobs:
           export MAJOR_VERSION="$(awk '/define APP_VERSION_MAJOR/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
           export MINOR_VERSION="$(awk '/define APP_VERSION_MINOR/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
           export BUILD_VERSION="$(awk '/define APP_VERSION_BUILD/ {print $3}' app/AWS/config_files/ota_demo_config.h)"
-          ./app/AWS/Board/B-U585I-IOT02A/sign_image.sh out/OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A "$MAJOR_VERSION.$MINOR_VERSION.$BUILD_VERSION" "$((10#$MAJOR_VERSION$MINOR_VERSION$BUILD_VERSION))"
+          ./app/AWS/Board/B-U585I-IOT02A/sign_image.sh out/OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A "$MAJOR_VERSION.$MINOR_VERSION.$BUILD_VERSION" "$(date +%s)"
       - name: Upload application image
         uses: actions/upload-artifact@master
         with:
