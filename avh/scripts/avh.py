@@ -15,9 +15,10 @@ if len(sys.argv) < 6 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
   exit(-1)
 
 apiEndpoint = 'https://app.avh.arm.com/api'
-vmName = 'DevSummit22-demo'
 thingName = 'DevSummit22-demo-{}'.format(int(time.time()))
+vmName = thingName
 fmwFile = os.path.join(sys.path[0], '../target/b_u585i_iot02a/image/firmware')
+flashoptionFile = os.path.join(sys.path[0], '../target/b_u585i_iot02a/image/flashoption')
 
 apiToken = sys.argv[1]
 mqttEndpoint = sys.argv[2]
@@ -81,15 +82,54 @@ async def wait_for_pattern(console, pattern):
         return match
 
 async def createSTM32U5(api_instance, vmName):
-  print('Finding DevSummit22-demo instance...')
-  api_response = await api_instance.v1_get_instances(name=vmName)
+  print('Finding a project...')
+  api_response = await api_instance.v1_get_projects()
   pprint(api_response)
-  if len(api_response) != 1:
-    raise Exception('Failed to find vm instance')
-  instance = api_response[0]
+  projectId = api_response[0].id
+  print('Done... project ID: {}'.format(projectId))
+
+  print('Create STM32U5 instance...')
+  api_response = await api_instance.v1_get_models()
+  chosenModel = None
+  for model in api_response:
+    if model.flavor.startswith('stm32u5'):
+      chosenModel = model
+      break
+
+  print("Chosen model: {}".format(chosenModel.name))
+
+  api_response = await api_instance.v1_get_model_software(model.model)
+  chosenSoftware = None
+  for software in api_response:
+    if software.filename.startswith('STM32U5-WiFiBasics'):
+      chosenSoftware = software
+      break
+
+  print("Chosen software: {}".format(chosenSoftware.filename))
+
+  api_response = await api_instance.v1_create_instance({
+    "name": vmName,
+    "project": projectId,
+    "flavor": chosenModel.flavor,
+    "os": chosenSoftware.version,
+    "osbuild": chosenSoftware.buildid
+  })
+  instance = api_response
+  print('Done... instance ID: {}'.format(instance.id))
+
+  print('Waiting for VM to create...')
+  await waitForState(api_instance, instance, 'on')
+
+  print('Flashing flashoption image...')
+  api_response = await api_instance.v1_create_image('partition', 'plain',
+    name='flashoption',
+    instance=instance.id,
+    file=flashoptionFile
+  )
+  pprint(api_response)
 
   print('Setting the VM to use the demo image: {}'.format(fmwFile))
-  api_response = await api_instance.v1_create_image('fwbinary', 'plain', 
+  api_response = await api_instance.v1_create_image('fwbinary', 'plain',
     name=os.path.basename(fmwFile),
     instance=instance.id,
     file=fmwFile
@@ -98,8 +138,6 @@ async def createSTM32U5(api_instance, vmName):
 
   print('Resetting VM to use the new software')
   api_response = await api_instance.v1_reboot_instance(instance.id)
-
-  print('Waiting for VM to finish resetting...')
   await waitForState(api_instance, instance, 'on')
   print('done')
 
@@ -221,6 +259,7 @@ async def main():
 
   async with AvhAPI.ApiClient(configuration=configuration) as api_client:
     api_instance = AvhAPI.ArmApi(api_client)
+    instance = None
     awsCert = (None, None) # (certArn, certId)
 
     token_response = await api_instance.v1_auth_login({
@@ -229,11 +268,6 @@ async def main():
 
     print('Logged in')
     configuration.access_token = token_response.token
-
-    print('Finding a project...')
-    api_response = await api_instance.v1_get_projects()
-    pprint(api_response)
-    projectId = api_response[0].id
 
     try:
       instance = await createSTM32U5(api_instance, vmName)
@@ -255,7 +289,8 @@ async def main():
       error = e
     finally:
       await cleanAwsIotThing(thingName, awsCert[0], awsCert[1], certPolicy)
-
+      if instance:
+        await api_instance.v1_delete_instance(instance.id)
       if console:
         console.close_timeout = 1
         await console.close()
