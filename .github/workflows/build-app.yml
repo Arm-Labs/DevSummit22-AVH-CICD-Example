@@ -23,7 +23,7 @@ jobs:
       - name: Build application
         uses: ./.github/actions/solar-build-and-run
         with:
-          repo: https://github.com/bulislaw/TrustZone-DevSummit22-Demo
+          repo: ${{ github.server_url }}/${{ github.repository }}
           auth: ${{ secrets.KSC_ACCESS_TOKEN }}
           # Path to the cprj file (relative to the top of the repo)
           project: app/AWS/OTA_MQTT_Update_Demo.Debug_B-U585I-IOT02A.cprj
