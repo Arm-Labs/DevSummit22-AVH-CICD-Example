@@ -3,6 +3,15 @@
 This demo shows how to use 3rd party hardware AVH to automatically test and deploy application using GitHub Actions. On each
 commit and pull request a test job is started using a virtual STM32U5 IoT Discovery Kit, which confirms the firmware is functional. Another GHA job is available to deploy the firmware to real hardware using Amazon IoT firmware update service.
 
+## GitHub Action workflows
+
+### Test flow
+<img width="1082" alt="GitHub Actions AVH based test flow" src="https://user-images.githubusercontent.com/107253/197732292-9707b1f3-76d9-498f-b99a-d9d006b5cb7f.png">
+
+### Deploy flow
+<img width="1045" alt="GitHub Actions deploy flow using AWS IoT firmware update service" src="https://user-images.githubusercontent.com/107253/197732430-e4a9cb0d-4ce2-42c3-830e-f95a466918d0.png">
+
+
 ## Arm TrustZone for Cortex-M - Demo Applications
 
 [**Arm TrustZone for Cortex-M**](https://www.arm.com/technologies/trustzone-for-cortex-m) enables System-Wide Security for IoT Devices. The technology reduces the potential for attack by isolating the critical security firmware, assets and private information from the rest of the application.
@@ -68,4 +77,3 @@ At the end of the setup you need to have:
   * `OTA_TARGET` - AWS IoT Thing ARN of your device
   * `OTA_POLICY` - Name of OTA policy attached to certificate
   * `OTA_ROLE_ARN` - ARN of the AWS OTA service role
-
