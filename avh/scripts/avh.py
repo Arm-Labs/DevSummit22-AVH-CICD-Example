@@ -216,7 +216,7 @@ async def cleanAwsIotThing(thingName, certArn, certId, certPolicy):
   except:
     pass
   try:
-    iot.update_certificate(certificateId=certArn, newStatus='INACTIVE')
+    iot.update_certificate(certificateId=certId, newStatus='INACTIVE')
   except:
     pass
   try:
